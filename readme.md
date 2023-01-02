@@ -203,3 +203,107 @@ You can open with file explorer and see the following. Extract the zip folder an
 
 Then run the command prompt and run the following command
 ```java -jar myproject-0.0.1-SNAPSHOT.jar```
+
+
+---
+
+#### Note create a quick constructor and getter and setter
+> alt + enter on the attribute name and select create field for constructor parameter
+
+
+---
+
+
+#### Using the JPA 
+- Add the following dependency to the pom.xml
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+```
+
+#### Add h2 database dependency
+- Add the following dependency to the pom.xml
+```xml
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+</dependency>
+```
+
+#### In memory database
+For in memory db you can just send your json data without creating  a database url. But you will loose all data when you restart the application unless you persist the data using the below configuration
+- Add the following to the application.properties file
+```properties
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+```
+
+---
+
+#### Create a new customer
+> POST http://localhost:8080/customers
+
+```json
+{
+    "firstName": "John",
+    "lastName": "Doe"
+}
+```
+
+#### Get all customers
+> GET http://localhost:8080/customers
+
+
+---
+
+#### Persisting data using MySQL
+First remove the h2 dependency from the pom.xml and replace it with the mysql dependency
+```xml
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+</dependency>
+```
+
+
+Log into the mysql server 
+```mysql -u root -p```
+
+Then create a new database
+```create database spring_db;```
+
+Switch to the database
+```use mydb;```
+
+Then create a new table, in our case the jpa will load the tables automatically
+```create table customer (id int auto_increment primary key, first_name varchar(255), last_name varchar(255));```
+
+Then add the following to the application.properties file in the src/main/resources folder
+```properties
+
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/spring_db?useSSL=false
+spring.datasource.username=root
+spring.datasource.password=Bassguitar1
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+```
+
+Then run the application and you should see the following
+
+Then go to the mysql server and run the following command
+```show tables;```
+```select * from customer;```
+
+
+
+
